@@ -45,7 +45,7 @@ static int __init init_func(void) {
 }
 
 static void __exit exit_func(void) {
-    pr_info("Log tracking ended");
+    pr_info("Bye, module ended\n");
 }
 
 module_init(init_func);
