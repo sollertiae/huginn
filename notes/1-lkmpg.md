@@ -10,5 +10,25 @@ A module is a program which can be dynamically loaded and unloaded within the ke
 
 - Each kernel module must have an init function and exit function, nowadays we are able to name the functions as we like, we simply need to use the macros `module_init()` and `module_exit()`
 
-## Surprised me: 
-This is why Linux rarely needs reboots compared to Windows, most functionality lives in modules that can be swapped without touching the running kernel.
+- The macro `__init` is used to place the function in init only, once the function is executed the memory is freed and `__exit` omits the cleanup function for builtin drivers since they 
+can never be unloaded. For loadable modules both macros have no 
+meaningful effect.
+
+**Surprised me:**
+
+- This is why Linux rarely needs reboots compared to Windows, most functionality lives in modules that can be swapped without touching the running kernel.
+
+Useful to keep output: `sudo dmesg -w`
+
+## Arguments in a module
+
+Modules can use arguments passed at `insmod` time, using the `module_param()` macro, exposed through sysfs `/sys/module/<module_name>/parameters/` with defined permissions. For callback based parameter monitoring use 
+`module_param_cb()`, it triggers custom get/set functions when the parameter is read or written via sysfs.
+
+## sysfs interaction
+- Read: `cat /sys/module/<name>/parameters/<param>`
+- Write: `echo <value> | sudo tee /sys/module/<name>/parameters/<param>`
+
+## Multi-file modules
+Modules can be split across multiple source files. We can achieve this by implementing the following in the Makefile `obj-m += module.o` and `module-objs := file1.o file2.o` instead 
+of a single source file.
