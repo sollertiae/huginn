@@ -48,3 +48,14 @@ There are character devices and block devices, the latter have a buffer for requ
 Using `ls -l` if the first character is c = character device, b = block device
 
 Devices should be put in `/dev` as part of the convention, although you do not have to.
+
+## File descriptor lifetime vs struct file lifetime
+
+open() creates one struct file, we can think about it like a shared object. Multiple file descriptors can point to the same struct file via dup() or fork().
+
+- release() fires when the last fd is closed — object truly gone
+- flush() fires on every close() — even if one is gone
+
+Mental model: release() = "nobody has this open anymore" not 
+"someone closed it"
+

@@ -1,6 +1,7 @@
 obj-m += huginn.o
 obj-m += args.o
 obj-m += change.o
+obj-m += chdev.o
 
 all:
 	make -C /lib/modules/$(shell uname -r)/build M=$(PWD) modules
