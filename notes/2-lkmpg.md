@@ -59,3 +59,27 @@ open() creates one struct file, we can think about it like a shared object. Mult
 Mental model: release() = "nobody has this open anymore" not 
 "someone closed it"
 
+## /proc file system
+
+The mechanism to send information to processes, provides access to ifnormation about processes and it is now used to report things such as memory (`/proc/meminfo`) and modules (`/proc/modules`)
+
+- What is an inode? A data structure in unix systems, stores metadata about a file such as permissions, ownership, size, location, timestamps.
+
+For regular files inodes point to the physical disk, `/proc` files are not in disk, it is generated on run time when read.
+
+## Read offset
+
+`read()` is called in a loop until 0 is received (EOF), the offset parameter tracks the position between calls such as
+
+- Return `> 0` data sent, read again
+- Return `0` EOF, stop reading
+- Return `< 0` error
+
+without offset checks this loop would retrieve the same data indefinitely as it would not see EOF.
+
+When moving data between kernel space and userspace, we cannot dereference pointers directly across the boundary. A pointer from userspace does not reference the same location in kernel space, the same address means something completely different in each segment. 
+We must safely copy data across the boundary using the appropriate kernel functions:
+
+- `copy_from_user` userspace -> kernel (write path)
+- `copy_to_user` kernel -> userspace (read path)
+- `get_user` / `put_user` same direction rules, but for single scalar values (char, int, long)
