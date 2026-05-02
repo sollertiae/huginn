@@ -91,3 +91,32 @@ With `proc_create` we can control metadata and manage additional hooks, such as 
 `seq_file` is an API which helps with formatting the output of /proc files. It consists of 3 functions `start()`, `next()`, `stop()`. It works in an iterative way, a sequence begins with `start()` and if the return is not NULL, `next()` is called, otherwise `stop()` is called. It will iterate through all the data using `next()`, the function `show()` will be called on each iteration and writes the data into the buffer read by the user. The sequence ends on a received NULL.
 
 Note: The sequence repeats until NULL is returned
+
+## Module interaction with `sysfs`
+
+We can interact with the running kernel using `sysfs` by reading setting variables inside of modules. Unlike `/proc` sysfs is tightly tied to kernel's device model. Every directory has a `struct kobject`. They have one-value-per-file convention to keep interfance simple and scriptable compared to `/proc`
+
+| Interface | Use for |
+|-----------|---------|
+| `/proc` | process info |
+| `/sys` | device attributes, single values |
+| `/dev` | data transfer, I/O |
+
+## Debugging interface `debugfs`
+
+`debugfs` is a filesystem which purpose is to export debugging information from the kernel space and expose it to the userspace. It is a good fit for adhoc diagnostics, counters and developer-oriented control points. On most systems it is mounted to `/sys/kernel/debug`
+
+## Talking to device files with `ioctl`
+
+Device files represent physical devices, most of which are used for input and output, opening the device file is often enough to get I/O; however, if we need to talk to the device itself, we use `ioctl` (Input Output ConTroL)
+
+- `_IO` - no data transfer
+- `_IOR` - read from device
+- `_IOW` - write to device
+- `_IOWR` - bidirectional
+
+State lives in `private_data`, allocated in `open`, freed in `release`. Shared state needs locking.
+
+## poll/epoll/select
+
+Aimed to solve the problem of waiting for multiple file descriptors in an efficient way, to prevent blocking on a single one. Give back control until something is ready rather than hanging. Without them a thread can block and potentially waste CPU polling. 

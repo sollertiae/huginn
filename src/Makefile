@@ -6,6 +6,9 @@ obj-m += proc_1.o
 obj-m += proc_2.o
 obj-m += proc_3.o
 obj-m += seq_1.o
+obj-m += sysfs_1.o
+obj-m += debugfs_1.o
+obj-m += ioctl.o
 
 all:
 	make -C /lib/modules/$(shell uname -r)/build M=$(PWD) modules
