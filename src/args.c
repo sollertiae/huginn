@@ -27,21 +27,21 @@ module_param_array(arr, int, &argc, 0000);
 MODULE_PARM_DESC(arr, "int array");
 
 static int __init init_func(void) {
-    pr_info("Handling arguments\n");
-    pr_info("x = %hd\n", x);
-    pr_info("y = %d\n", y);
-    pr_info("z = %ld\n", z);
-    pr_info("string = %s\n", str);
-
-    for (int i = 0; i < ARRAY_SIZE(arr); ++i) {
-        pr_info("arr[%d] = %d\n", i, arr[i]);
-    }
-    pr_info("arr has %d arguments\n", argc);
-    return 0;
+	pr_info("Handling arguments\n");
+	pr_info("x = %hd\n", x);
+	pr_info("y = %d\n", y);
+	pr_info("z = %ld\n", z);
+	pr_info("string = %s\n", str);
+	
+	for (int i = 0; i < ARRAY_SIZE(arr); ++i) {
+		pr_info("arr[%d] = %d\n", i, arr[i]);
+	}
+	pr_info("arr has %d arguments\n", argc);
+	return 0;
 }
 
 static void __exit exit_func(void) {
-    pr_info("Bye arguments");
+	pr_info("Bye arguments");
 }
 
 module_init(init_func);
