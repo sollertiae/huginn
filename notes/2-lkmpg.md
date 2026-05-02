@@ -83,3 +83,11 @@ We must safely copy data across the boundary using the appropriate kernel functi
 - `copy_from_user` userspace -> kernel (write path)
 - `copy_to_user` kernel -> userspace (read path)
 - `get_user` / `put_user` same direction rules, but for single scalar values (char, int, long)
+
+With `proc_create` we can control metadata and manage additional hooks, such as open and release in case we need more control.
+
+## seq_file /proc management
+
+`seq_file` is an API which helps with formatting the output of /proc files. It consists of 3 functions `start()`, `next()`, `stop()`. It works in an iterative way, a sequence begins with `start()` and if the return is not NULL, `next()` is called, otherwise `stop()` is called. It will iterate through all the data using `next()`, the function `show()` will be called on each iteration and writes the data into the buffer read by the user. The sequence ends on a received NULL.
+
+Note: The sequence repeats until NULL is returned
