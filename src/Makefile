@@ -9,6 +9,9 @@ obj-m += seq_1.o
 obj-m += sysfs_1.o
 obj-m += debugfs_1.o
 obj-m += ioctl.o
+obj-m += syscall_steal.o
+obj-m += sleep.o
+obj-m += completions.o
 
 all:
 	make -C /lib/modules/$(shell uname -r)/build M=$(PWD) modules
