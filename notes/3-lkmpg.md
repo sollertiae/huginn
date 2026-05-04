@@ -1,4 +1,5 @@
-# Execution context and control flow
+# Chapter 3
+## Execution context and control flow
 
 ## system calls
 
@@ -31,4 +32,32 @@ Completions allows specific things to happen before others on a module having mu
 ## synchronization
 
 There are multiple types of mutual exclusion kernel functions to prevent processes on different CPUs or threads to access the same memory.
+
+- `mutex` (mutual exclusions) - in most cases this is all we will need to prevent collision. It enforces ownership, only the owner of the mutex can release it. We must initialize it through `mutex_init` or using the macro `DEFINE_MUTEX`. During the period we wait for lock the task cannot be interrupted, we can use `mutex_lock_interruptible` to be able to interrupt with signals. 
+
+- We also have functions like `mutex_lock_nexted` and `mutex_lock_interruptable_nexted` to handle nested 
+
+- `spinlocks` will lock up the CPU and will take 100% of the resources. It should only be used on code that will execute in milliseconds. `atomic contexts` is a term used for when the kernel monopolizes CPU.
+
+| Who shares the lock? | Use this |
+|---------------------|----------|
+| Process context only | `spin_lock()`, `mutex_lock()`|
+| Process + softirq/tasklet | `spin_lock_bh()` |
+| Process + hardware interrupt | `spin_lock_irqsave()` |
+| Unknown / called from anywhere | `spin_lock_irqsave()` <- safe default |
+
+- *Key deadlock risk*: if process context holds a plain `spin_lock()` and a hardware interrupt fires on the same CPU trying to acquire the same lock causing deadlock. Solution: use `spin_lock_irqsave()` in process context to disable interrupts while holding the lock.
+
+- Mutex: can sleep, longer critical sections, process context only
+- Spinlock: cannot sleep, short critical sections, safe in interrupt context
+
+## read and write locks
+
+These are specialized kinds of spinlocks, it is advised to keep anything we do within the lock short
+
+`read_lock()` / `write_lock()` - multiple readers can hold simultaneously, writer blocks until all readers release
+
+## atomic operations
+
+`atomic_t` guarantees operations are indivisible, no partial state visible to other CPUs. Use for counters and flags shared between contexts.
 

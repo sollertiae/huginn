@@ -12,6 +12,7 @@ obj-m += ioctl.o
 obj-m += syscall_steal.o
 obj-m += sleep.o
 obj-m += completions.o
+obj-m += mutex.o
 
 all:
 	make -C /lib/modules/$(shell uname -r)/build M=$(PWD) modules
