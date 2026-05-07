@@ -130,6 +130,8 @@ static ssize_t huginn_write(struct file *file,
 	events[head].uid = current_uid().val;
 	events[head].timestamp = ktime_get_ns();
 	events[head].message[to_copy] = '\0';
+	if (to_copy > 0 && events[head].message[to_copy - 1] == '\n')
+		events[head].message[to_copy - 1] = '\0';
 	head = (head + 1) % MAX_LOGS;
 	if (count < MAX_LOGS)
 		count++;
@@ -210,10 +212,12 @@ static int __init huginn_init(void) {
  err_cdev:
 	unregister_chrdev_region(dev_num, 1);
  err_chrdev:
+	proc_remove(huginn_proc);
 	return ret;
 }
 
 static void __exit huginn_exit(void) {
+	proc_remove(huginn_proc);
 	device_destroy(huginn_class, dev_num);
 	class_destroy(huginn_class);
 	cdev_del(&huginn_cdev);
