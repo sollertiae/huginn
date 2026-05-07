@@ -45,9 +45,6 @@ MODULE_DESCRIPTION("Logger device");
   huginn proc functions
  */
 
-/*
-  TODO: fix MAX_LOGS being doubled
- */
 static void *huginn_seq_strt(struct seq_file *s, loff_t *pos) {
 	if (*pos >= count)
 		return NULL;
