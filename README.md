@@ -32,10 +32,6 @@ Each log entry captures:
 - UID of the writing process
 - Message (up to 128 bytes)
 
-## Known issues
-
-Double print bug when log is full, pending.
-
 ## Goal
 
 Huginn is meant to grow into a kernel module that exposes an 
